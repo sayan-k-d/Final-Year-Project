@@ -1,0 +1,65 @@
+#input fields
+enum UserTypeInput {
+  SURVEYOR
+  ADMIN
+  SUPER_ADMIN
+}
+input AddressInput {
+  city: String
+  country: String
+  state: String
+}
+input CompanyInput {
+  companyName: String
+  employeeId: String
+}
+input CollegeInput {
+  collegeName: String
+  collegeId: String
+}
+input UserInput {
+  fullName: String
+  email: String
+  phone: String
+  address: AddressInput
+  date_of_birth: String
+  userType: UserTypeInput
+  isCompany: Boolean
+  isCollege: Boolean
+  image: String
+  company: CompanyInput
+  college: CollegeInput
+  password: String
+  userId: ID
+}
+
+#query fields
+type AddressDetails {
+  city: String
+  country: String
+  state: String
+}
+type CompanyDetails {
+  companyName: String
+  employeeId: String
+}
+type CollegeDetails {
+  collegeName: String
+  collegeId: String
+}
+type UserDetails {
+  image: String
+  company: CompanyDetails
+  college: CollegeDetails
+}
+type User implements Timestamps {
+  fullName: String
+  email: String
+  phone: String
+  address: AddressDetails
+  date_of_birth: String
+  userType: String
+  adminDetails: UserDetails
+  createdAt: Date!
+  updatedAt: Date!
+}

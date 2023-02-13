@@ -1,0 +1,10 @@
+directive @external on FIELD_DEFINITION
+scalar Date
+
+type Query {
+  getAllAdmins: [User]!
+}
+
+type Mutation {
+  createAdmin(userDataInput: UserInput): User!
+}

@@ -1,0 +1,28 @@
+{
+  "name": "finalyearproj",
+  "version": "1.0.0",
+  "description": "",
+  "main": "user.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@apollo/server": "^4.3.2",
+    "@apollo/subgraph": "^2.3.0",
+    "@sentry/node": "^7.34.0",
+    "body-parser": "^1.20.1",
+    "dotenv": "^16.0.3",
+    "graphql": "^16.6.0",
+    "graphql-middleware": "^6.1.33",
+    "graphql-tag": "^2.12.6",
+    "jsonwebtoken": "^9.0.0",
+    "mongodb": "^4.12.1",
+    "mongoose": "^6.8.0",
+    "os": "^0.1.2"
+  }
+}
