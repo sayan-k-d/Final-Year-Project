@@ -11,4 +11,4 @@ const SuperAdminSchema = Schema(
   },
   { timestamps: true }
 );
-export default model("SuperAdmin", SuperAdminSchema);
+export default model("SuperAdmin", SuperAdminSchema, "SuperAdmin");

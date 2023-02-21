@@ -4,7 +4,7 @@ const UserSchema = Schema(
   {
     fullName: { type: String },
     email: { type: String, unique: true },
-    phone: { type: String, unique: true },
+    phone: { type: String },
     address: {
       city: { type: String },
       country: { type: String },
@@ -22,4 +22,4 @@ const UserSchema = Schema(
   { timestamps: true }
 );
 
-export default model("User", UserSchema);
+export default model("User", UserSchema, "User");

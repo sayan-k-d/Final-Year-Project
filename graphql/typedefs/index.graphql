@@ -2,7 +2,8 @@ directive @external on FIELD_DEFINITION
 scalar Date
 
 type Query {
-  getAllUser: [User]!
+  getAllUsers: [User]!
+  login(loginData: AuthInput!): User!
 }
 
 type Mutation {

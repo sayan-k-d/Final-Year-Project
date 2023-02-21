@@ -16,4 +16,4 @@ const FormSchema = Schema(
   },
   { timestamps: true }
 );
-export default model("Forms", FormSchema);
+export default model("Forms", FormSchema, "Forms");
