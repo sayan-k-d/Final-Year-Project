@@ -1,7 +1,7 @@
 import { Admin, SuperAdmin, Surveyor, User } from "../../../db/models/index.js";
 
 const userMutations = {
-  createAdmin: async (_, { userDataInput }) => {
+  createUser: async (_, { userDataInput }) => {
     const newUser = await new User(userDataInput).save();
     userDataInput.userId = newUser._id;
     if (newUser.userType === "ADMIN") {

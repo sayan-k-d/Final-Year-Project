@@ -1,7 +1,7 @@
 import { Admin, User } from "../../../db/models/index.js";
 
 const adminQueries = {
-  getAllAdmins: async () => {
+  getAllUsers: async () => {
     const allAdmins = await User.find({ userType: "ADMIN" });
     return allAdmins.map(async ({ _doc }) => ({
       ..._doc,
