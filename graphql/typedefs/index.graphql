@@ -3,9 +3,14 @@ scalar Date
 
 type Query {
   getAllUsers: [User]!
-  login(loginData: AuthInput!): User!
+  login(loginData: AuthInput!): LoginData!
 }
 
 type Mutation {
   createUser(userDataInput: UserInput): User!
+  createResponse(formId: ID, responseData: ResponseInput): Response!
+  anonymousResponses(
+    formId: ID
+    anonymousResponseData: AnonumousResponseInput
+  ): AnonymousResponse!
 }

@@ -2,3 +2,8 @@ input AuthInput {
   email: String
   password: String
 }
+
+type LoginData {
+  token: String
+  user: User
+}

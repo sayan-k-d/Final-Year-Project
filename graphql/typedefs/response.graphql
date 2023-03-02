@@ -1,0 +1,40 @@
+#input fields
+input responseDataInput {
+  questionId: ID
+  responseText: String
+}
+
+input ResponseInput {
+  userId: ID
+  response: [responseDataInput]
+}
+
+input AnonumousResponseInput {
+  fullName: String
+  email: String
+  userId: ID
+  response: [responseDataInput]
+}
+
+#query fields
+type responseData {
+  questionId: ID
+  responseText: String
+}
+type responsesDocument {
+  userId: ID
+  response: [responseData]
+}
+type Response {
+  formId: ID
+  responses: [responsesDocument]
+}
+type anonymousUserData {
+  fullName: String
+  email: String
+}
+type AnonymousResponse {
+  anonymousUser: anonymousUserData
+  formId: ID
+  responses: [responseData]
+}
