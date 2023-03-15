@@ -4,10 +4,11 @@ const SurveyorSchema = Schema(
   {
     adminId: { type: Schema.Types.ObjectId },
     userId: { type: Schema.Types.ObjectId },
-    isCompany: { type: Boolean },
-    isCollege: { type: Boolean },
-    company: { companyName: { type: String }, employeeId: { type: String } },
-    college: { collegeName: { type: String }, collegeId: { type: String } },
+    organization: {
+      organizationName: { type: String },
+      organizationId: { type: String },
+    },
+    profession: { type: String },
     image: { type: String },
   },
   { timestamps: true }

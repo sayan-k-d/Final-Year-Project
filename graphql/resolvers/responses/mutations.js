@@ -25,34 +25,50 @@ const responseMutations = {
 
   anonymousResponses: async (_, { formId, anonymousResponseData }) => {
     let isFormExist = await Response.findOne({ formId: formId });
-    const newAnonymousUser = await new AnonymousUser(
-      anonymousResponseData
-    ).save();
-    anonymousResponseData.userId = newAnonymousUser._id;
-
+    let isUserExist = await AnonymousUser.findOne({
+      email: anonymousResponseData.email,
+    });
+    let newAnonymousUser;
+    if (!isUserExist) {
+      newAnonymousUser = await new AnonymousUser(anonymousResponseData).save();
+      anonymousResponseData.userId = newAnonymousUser._id;
+    } else {
+      anonymousResponseData.userId = isUserExist._id;
+    }
     if (isFormExist) {
       const updateResponse = await Response.findOneAndUpdate(
         { formId: formId },
         { $push: { responses: anonymousResponseData } },
         { new: true }
       );
-      console.log(updateResponse);
-      return {
-        responses: anonymousResponseData.response,
-        formId: formId,
-        anonymousUser: newAnonymousUser,
-      };
+      return newAnonymousUser
+        ? {
+            responses: anonymousResponseData.response,
+            formId: formId,
+            anonymousUser: newAnonymousUser,
+          }
+        : {
+            responses: anonymousResponseData.response,
+            formId: formId,
+            anonymousUser: isUserExist,
+          };
     } else {
       const newResponse = new Response({
         formId: formId,
         responses: [anonymousResponseData],
       });
       await newResponse.save();
-      return {
-        responses: anonymousResponseData.response,
-        formId: formId,
-        anonymousUser: newAnonymousUser,
-      };
+      return newAnonymousUser
+        ? {
+            responses: anonymousResponseData.response,
+            formId: formId,
+            anonymousUser: newAnonymousUser,
+          }
+        : {
+            responses: anonymousResponseData.response,
+            formId: formId,
+            anonymousUser: isUserExist,
+          };
     }
   },
 };

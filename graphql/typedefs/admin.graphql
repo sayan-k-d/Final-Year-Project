@@ -9,14 +9,11 @@ input AddressInput {
   country: String
   state: String
 }
-input CompanyInput {
-  companyName: String
-  employeeId: String
+input OrganizationInput {
+  organizationName: String
+  organizationId: String
 }
-input CollegeInput {
-  collegeName: String
-  collegeId: String
-}
+
 input UserInput {
   fullName: String
   email: String
@@ -24,11 +21,9 @@ input UserInput {
   address: AddressInput
   date_of_birth: String
   userType: UserTypeInput
-  isCompany: Boolean
-  isCollege: Boolean
   image: String
-  company: CompanyInput
-  college: CollegeInput
+  organization: OrganizationInput
+  profession: String
   password: String
   userId: ID
 }
@@ -39,27 +34,25 @@ type AddressDetails {
   country: String
   state: String
 }
-type CompanyDetails {
-  companyName: String
-  employeeId: String
-}
-type CollegeDetails {
-  collegeName: String
-  collegeId: String
+type OrganizationDetails {
+  organizationName: String
+  organizationId: String
 }
 type UserDetails {
+  _id: ID
   image: String
-  company: CompanyDetails
-  college: CollegeDetails
+  organization: OrganizationDetails
+  profession: String
 }
 type User implements Timestamps {
+  _id: ID
   fullName: String
   email: String
   phone: String
   address: AddressDetails
   date_of_birth: String
   userType: String
-  adminDetails: UserDetails
+  userDetails: UserDetails
   createdAt: Date!
   updatedAt: Date!
 }

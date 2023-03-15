@@ -4,23 +4,93 @@ const userMutations = {
   createUser: async (_, { userDataInput }) => {
     const newUser = await new User(userDataInput).save();
     userDataInput.userId = newUser._id;
+    let specificUser;
     if (newUser.userType === "ADMIN") {
-      const newAdmin = await new Admin(userDataInput).save();
-      await User.findByIdAndUpdate(newUser._id, { referenceId: newAdmin._id });
+      specificUser = await new Admin(userDataInput).save();
     }
     if (newUser.userType == "SUPER_ADMIN") {
-      const newSuperAdmin = await new SuperAdmin(userDataInput).save();
-      await User.findByIdAndUpdate(newUser._id, {
-        referenceId: newSuperAdmin._id,
-      });
+      specificUser = await new SuperAdmin(userDataInput).save();
     }
     if (newUser.userType === "SURVEYOR") {
-      const newSurveyor = await new Surveyor(userDataInput).save();
-      await User.findByIdAndUpdate(newUser._id, {
-        referenceId: newSurveyor._id,
+      specificUser = await new Surveyor(userDataInput).save();
+    }
+    await User.findByIdAndUpdate(newUser._id, {
+      referenceId: specificUser._id,
+    });
+    return { ...newUser.toJSON(), userDetails: specificUser };
+  },
+
+  updateUser: async (_, { id, updateUserDataInput }) => {
+    const updateUser = await User.findByIdAndUpdate(id, updateUserDataInput);
+    let updateSpecificUser, newSpecificUser;
+    if (updateUser.userType === "ADMIN") {
+      updateSpecificUser = await Admin.findByIdAndUpdate(
+        updateUser.referenceId,
+        updateUserDataInput,
+        { new: true }
+      );
+      if (updateUserDataInput.userType != updateUser.userType) {
+        await Admin.findByIdAndDelete(updateUser.referenceId);
+      }
+    }
+    if (updateUser.userType == "SUPER_ADMIN") {
+      updateSpecificUser = await SuperAdmin.findByIdAndUpdate(
+        updateUser.referenceId,
+        updateUserDataInput,
+        { new: true }
+      );
+      if (updateUserDataInput.userType != updateUser.userType) {
+        await SuperAdmin.findByIdAndDelete(updateUser.referenceId);
+      }
+    }
+    if (updateUser.userType === "SURVEYOR") {
+      updateSpecificUser = await Surveyor.findByIdAndUpdate(
+        updateUser.referenceId,
+        updateUserDataInput,
+        { new: true }
+      );
+      if (updateUserDataInput.userType != updateUser.userType) {
+        await Surveyor.findByIdAndDelete(updateUser.referenceId);
+      }
+    }
+    if (updateUserDataInput.userType != updateUser.userType) {
+      if (updateUserDataInput.userType === "ADMIN") {
+        newSpecificUser = await new Admin({
+          ...updateSpecificUser.toJSON(),
+          userId: updateSpecificUser.userId,
+        }).save();
+      } else if (updateUserDataInput.userType == "SUPER_ADMIN") {
+        newSpecificUser = await new SuperAdmin({
+          ...updateSpecificUser.toJSON(),
+          userId: updateSpecificUser.userId,
+        }).save();
+      } else if (updateUserDataInput.userType === "SURVEYOR") {
+        newSpecificUser = await new Surveyor({
+          ...updateSpecificUser.toJSON(),
+          userId: updateSpecificUser.userId,
+        }).save();
+      }
+      await User.findByIdAndUpdate(id, {
+        referenceId: newSpecificUser._id,
       });
     }
-    return newUser;
+    return newSpecificUser
+      ? { ...updateUser.toJSON(), userDetails: newSpecificUser }
+      : { ...updateUser.toJSON(), userDetails: updateSpecificUser };
+  },
+
+  deleteUser: async (_, { id }) => {
+    const deletedUser = await User.findByIdAndDelete(id);
+    if (deletedUser.userType === "ADMIN") {
+      await Admin.findByIdAndDelete(deletedUser.referenceId);
+    }
+    if (deletedUser.userType == "SUPER_ADMIN") {
+      await SuperAdmin.findByIdAndDelete(deletedUser.referenceId);
+    }
+    if (deletedUser.userType === "SURVEYOR") {
+      await Surveyor.findByIdAndDelete(deletedUser.referenceId);
+    }
+    return "Record Deleted Succssfully.";
   },
 };
 export default userMutations;

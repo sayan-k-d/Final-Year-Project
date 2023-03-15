@@ -5,8 +5,11 @@ const AdminSchema = Schema(
     surveyorId: { type: Schema.Types.ObjectId },
     formId: { type: Schema.Types.ObjectId },
     image: { type: String },
-    company: { companyName: { type: String }, employeeId: { type: String } },
-
+    organization: {
+      organizationName: { type: String },
+      organizationId: { type: String },
+    },
+    profession: { type: String },
     userId: { type: Schema.Types.ObjectId },
   },
   { timestamps: true }

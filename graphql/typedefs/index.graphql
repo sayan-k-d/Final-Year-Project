@@ -8,6 +8,9 @@ type Query {
 
 type Mutation {
   createUser(userDataInput: UserInput): User!
+  updateUser(id: ID, updateUserDataInput: UserInput): User!
+  deleteUser(id: ID): String!
+
   createResponse(formId: ID, responseData: ResponseInput): Response!
   anonymousResponses(
     formId: ID
