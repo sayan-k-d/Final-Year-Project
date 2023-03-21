@@ -8,7 +8,7 @@ export function authMiddleware(resolve, parent, args, context, info) {
     if (token) {
       try {
         const user = jwt.verify(token, process.env.JWT_SECRET);
-        console.log(user);
+
         context.currentUser = user;
       } catch (err) {
         throw new AuthenticationError("Invalid/Expired token");

@@ -22,6 +22,7 @@ const userMutations = {
 
   updateUser: async (_, { id, updateUserDataInput }) => {
     const updateUser = await User.findByIdAndUpdate(id, updateUserDataInput);
+    // console.log(updateUser);
     let updateSpecificUser, newSpecificUser;
     if (updateUser.userType === "ADMIN") {
       updateSpecificUser = await Admin.findByIdAndUpdate(
@@ -33,13 +34,17 @@ const userMutations = {
         await Admin.findByIdAndDelete(updateUser.referenceId);
       }
     }
-    if (updateUser.userType == "SUPER_ADMIN") {
+    if (updateUser.userType === "SUPER_ADMIN") {
       updateSpecificUser = await SuperAdmin.findByIdAndUpdate(
         updateUser.referenceId,
         updateUserDataInput,
         { new: true }
       );
-      if (updateUserDataInput.userType != updateUser.userType) {
+
+      if (
+        updateUserDataInput.userType != null &&
+        updateUserDataInput.userType != updateUser.userType
+      ) {
         await SuperAdmin.findByIdAndDelete(updateUser.referenceId);
       }
     }
@@ -70,13 +75,15 @@ const userMutations = {
           userId: updateSpecificUser.userId,
         }).save();
       }
-      await User.findByIdAndUpdate(id, {
-        referenceId: newSpecificUser._id,
-      });
+      if (newSpecificUser)
+        await User.findByIdAndUpdate(id, {
+          referenceId: newSpecificUser._id,
+        });
     }
+    const getUser = await User.findById(id);
     return newSpecificUser
-      ? { ...updateUser.toJSON(), userDetails: newSpecificUser }
-      : { ...updateUser.toJSON(), userDetails: updateSpecificUser };
+      ? { ...getUser.toJSON(), userDetails: newSpecificUser }
+      : { ...getUser.toJSON(), userDetails: updateSpecificUser };
   },
 
   deleteUser: async (_, { id }) => {

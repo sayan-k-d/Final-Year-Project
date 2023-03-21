@@ -1,0 +1,34 @@
+enum FormStatusInput {
+  IN_PROCESS
+  UNDER_REVIEW
+  ACCEPTED
+  REJECTED
+  CANCELED
+}
+input QuestionInput {
+  questionText: String
+  questionType: String
+}
+input FormInput {
+  formTitle: String
+  formLink: String
+  formStatus: FormStatusInput
+  description: String
+  questions: [QuestionInput]
+  responses: [ID]
+  adminId: [ID]
+  surveyorId: [ID]
+}
+
+type QuestionList {
+  questionText: String
+  questionType: String
+}
+type Form {
+  formTitle: String
+  formStatus: String
+  description: String
+  questions: [QuestionList]
+  createdAt: Date!
+  updatedAt: Date!
+}

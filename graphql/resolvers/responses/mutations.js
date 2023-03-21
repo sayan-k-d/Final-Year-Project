@@ -1,4 +1,4 @@
-import { AnonymousUser, Response } from "../../../db/models/index.js";
+import { AnonymousUser, Forms, Response } from "../../../db/models/index.js";
 
 const responseMutations = {
   createResponse: async (_, { formId, responseData }, { currentUser }) => {
@@ -6,17 +6,36 @@ const responseMutations = {
       responseData.userId = currentUser.userId;
       let isFormExist = await Response.findOne({ formId: formId });
       if (isFormExist) {
+        await Forms.findByIdAndUpdate(
+          formId,
+          {
+            $push: {
+              surveyorId: currentUser.userId,
+            },
+          },
+          { new: true }
+        );
         return await Response.findOneAndUpdate(
           { formId: formId },
           { $push: { responses: responseData } },
           { new: true }
         );
       } else {
-        const newResponse = new Response({
+        const newResponse = await new Response({
           formId: formId,
           responses: [responseData],
-        });
-        return await newResponse.save();
+        }).save();
+        await Forms.findByIdAndUpdate(
+          formId,
+          {
+            $push: {
+              responses: newResponse._id,
+              surveyorId: currentUser.userId,
+            },
+          },
+          { new: true }
+        );
+        return newResponse;
       }
     } else {
       return await Response.findOne({ formId: formId });
@@ -36,6 +55,15 @@ const responseMutations = {
       anonymousResponseData.userId = isUserExist._id;
     }
     if (isFormExist) {
+      await Forms.findByIdAndUpdate(
+        formId,
+        {
+          $push: {
+            surveyorId: anonymousResponseData.userId,
+          },
+        },
+        { new: true }
+      );
       const updateResponse = await Response.findOneAndUpdate(
         { formId: formId },
         { $push: { responses: anonymousResponseData } },
@@ -58,6 +86,16 @@ const responseMutations = {
         responses: [anonymousResponseData],
       });
       await newResponse.save();
+      await Forms.findByIdAndUpdate(
+        formId,
+        {
+          $push: {
+            responses: newResponse._id,
+            surveyorId: anonymousResponseData.userId,
+          },
+        },
+        { new: true }
+      );
       return newAnonymousUser
         ? {
             responses: anonymousResponseData.response,

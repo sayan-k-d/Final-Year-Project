@@ -3,6 +3,7 @@ scalar Date
 
 type Query {
   getAllUsers: [User]!
+  getUserById(id: ID): User!
   login(loginData: AuthInput!): LoginData!
 }
 
@@ -10,6 +11,9 @@ type Mutation {
   createUser(userDataInput: UserInput): User!
   updateUser(id: ID, updateUserDataInput: UserInput): User!
   deleteUser(id: ID): String!
+
+  createForm(formData: FormInput): Form
+  updateForm(id: ID, updateFormDataInput: FormInput): Form
 
   createResponse(formId: ID, responseData: ResponseInput): Response!
   anonymousResponses(
