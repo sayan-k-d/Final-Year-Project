@@ -11,23 +11,25 @@ input QuestionInput {
 }
 input FormInput {
   formTitle: String
-  formLink: String
+  formType: String
+  adminId: ID
   formStatus: FormStatusInput
   description: String
   questions: [QuestionInput]
   responses: [ID]
-  adminId: [ID]
-  surveyorId: [ID]
+  surveyorEmail: String
 }
 
 type QuestionList {
   questionText: String
   questionType: String
 }
-type Form {
+type Form implements Timestamps {
   formTitle: String
+  formType: String
   formStatus: String
   description: String
+  adminDetails: User
   questions: [QuestionList]
   createdAt: Date!
   updatedAt: Date!

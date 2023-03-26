@@ -1,8 +1,10 @@
 import { Forms } from "../../../db/models/index.js";
 
-const responseMutations = {
+const formMutations = {
   createForm: async (_, { formsData }, { currentUser }) => {
     if (currentUser) {
+      formsData.adminId = currentUser.userId;
+      // console.log(formsData);
       let newForm = await new Forms(formsData).save();
       return newForm;
     }
@@ -19,4 +21,4 @@ const responseMutations = {
     }
   },
 };
-export default responseMutations;
+export default formMutations;

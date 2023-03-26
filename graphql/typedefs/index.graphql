@@ -5,6 +5,8 @@ type Query {
   getAllUsers: [User]!
   getUserById(id: ID): User!
   login(loginData: AuthInput!): LoginData!
+
+  getAllForms: [Form]!
 }
 
 type Mutation {
@@ -12,8 +14,8 @@ type Mutation {
   updateUser(id: ID, updateUserDataInput: UserInput): User!
   deleteUser(id: ID): String!
 
-  createForm(formData: FormInput): Form
-  updateForm(id: ID, updateFormDataInput: FormInput): Form
+  createForm(formsData: FormInput): Form!
+  updateForm(id: ID, updateFormDataInput: FormInput): Form!
 
   createResponse(formId: ID, responseData: ResponseInput): Response!
   anonymousResponses(
