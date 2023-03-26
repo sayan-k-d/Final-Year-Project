@@ -40,71 +40,105 @@ const userMutations = {
               return specificUser;
             },
           };
-        }
-      }
-      const updateUser = await User.findByIdAndUpdate(id, updateUserDataInput);
-      // console.log(updateUser);
-      let updateSpecificUser, newSpecificUser;
-      if (updateUser.userType === "ADMIN") {
-        updateSpecificUser = await Admin.findByIdAndUpdate(
-          updateUser.referenceId,
-          updateUserDataInput,
-          { new: true }
-        );
-        if (updateUserDataInput.userType != updateUser.userType) {
-          await Admin.findByIdAndDelete(updateUser.referenceId);
-        }
-      }
-      if (updateUser.userType === "SUPER_ADMIN") {
-        updateSpecificUser = await SuperAdmin.findByIdAndUpdate(
-          updateUser.referenceId,
-          updateUserDataInput,
-          { new: true }
-        );
+        } else {
+          const updateUser = await User.findByIdAndUpdate(
+            id,
+            updateUserDataInput
+          );
+          // console.log(updateUser);
+          let updateSpecificUser, newSpecificUser;
+          if (updateUser.userType === "ADMIN") {
+            updateSpecificUser = await Admin.findByIdAndUpdate(
+              updateUser.referenceId,
+              updateUserDataInput,
+              { new: true }
+            );
+            if (updateUserDataInput.userType != updateUser.userType) {
+              await Admin.findByIdAndDelete(updateUser.referenceId);
+            }
+          }
+          if (updateUser.userType === "SUPER_ADMIN") {
+            updateSpecificUser = await SuperAdmin.findByIdAndUpdate(
+              updateUser.referenceId,
+              updateUserDataInput,
+              { new: true }
+            );
 
-        if (
-          updateUserDataInput.userType != null &&
-          updateUserDataInput.userType != updateUser.userType
-        ) {
-          await SuperAdmin.findByIdAndDelete(updateUser.referenceId);
+            if (
+              updateUserDataInput.userType != null &&
+              updateUserDataInput.userType != updateUser.userType
+            ) {
+              await SuperAdmin.findByIdAndDelete(updateUser.referenceId);
+            }
+          }
+          if (updateUser.userType === "SURVEYOR") {
+            updateSpecificUser = await Surveyor.findByIdAndUpdate(
+              updateUser.referenceId,
+              updateUserDataInput,
+              { new: true }
+            );
+            if (updateUserDataInput.userType != updateUser.userType) {
+              await Surveyor.findByIdAndDelete(updateUser.referenceId);
+            }
+          }
+          if (updateUserDataInput.userType != updateUser.userType) {
+            if (updateUserDataInput.userType === "ADMIN") {
+              newSpecificUser = await new Admin({
+                ...updateSpecificUser.toJSON(),
+                userId: updateSpecificUser.userId,
+              }).save();
+            } else if (updateUserDataInput.userType == "SUPER_ADMIN") {
+              newSpecificUser = await new SuperAdmin({
+                ...updateSpecificUser.toJSON(),
+                userId: updateSpecificUser.userId,
+              }).save();
+            } else if (updateUserDataInput.userType === "SURVEYOR") {
+              newSpecificUser = await new Surveyor({
+                ...updateSpecificUser.toJSON(),
+                userId: updateSpecificUser.userId,
+              }).save();
+            }
+            if (newSpecificUser)
+              await User.findByIdAndUpdate(id, {
+                referenceId: newSpecificUser._id,
+              });
+          }
+          const getUser = await User.findById(id);
+          return newSpecificUser
+            ? { ...getUser.toJSON(), userDetails: newSpecificUser }
+            : { ...getUser.toJSON(), userDetails: updateSpecificUser };
         }
-      }
-      if (updateUser.userType === "SURVEYOR") {
-        updateSpecificUser = await Surveyor.findByIdAndUpdate(
-          updateUser.referenceId,
-          updateUserDataInput,
-          { new: true }
+      } else {
+        //---------------
+        const updateUser = await User.findByIdAndUpdate(
+          id,
+          updateUserDataInput
         );
-        if (updateUserDataInput.userType != updateUser.userType) {
-          await Surveyor.findByIdAndDelete(updateUser.referenceId);
+        let updateSpecificUser;
+        if (updateUser.userType === "ADMIN") {
+          updateSpecificUser = await Admin.findByIdAndUpdate(
+            updateUser.referenceId,
+            updateUserDataInput,
+            { new: true }
+          );
         }
-      }
-      if (updateUserDataInput.userType != updateUser.userType) {
-        if (updateUserDataInput.userType === "ADMIN") {
-          newSpecificUser = await new Admin({
-            ...updateSpecificUser.toJSON(),
-            userId: updateSpecificUser.userId,
-          }).save();
-        } else if (updateUserDataInput.userType == "SUPER_ADMIN") {
-          newSpecificUser = await new SuperAdmin({
-            ...updateSpecificUser.toJSON(),
-            userId: updateSpecificUser.userId,
-          }).save();
-        } else if (updateUserDataInput.userType === "SURVEYOR") {
-          newSpecificUser = await new Surveyor({
-            ...updateSpecificUser.toJSON(),
-            userId: updateSpecificUser.userId,
-          }).save();
+        if (updateUser.userType === "SUPER_ADMIN") {
+          updateSpecificUser = await SuperAdmin.findByIdAndUpdate(
+            updateUser.referenceId,
+            updateUserDataInput,
+            { new: true }
+          );
         }
-        if (newSpecificUser)
-          await User.findByIdAndUpdate(id, {
-            referenceId: newSpecificUser._id,
-          });
+        if (updateUser.userType === "SURVEYOR") {
+          updateSpecificUser = await Surveyor.findByIdAndUpdate(
+            updateUser.referenceId,
+            updateUserDataInput,
+            { new: true }
+          );
+        }
+        const getUser = await User.findById(id);
+        return { ...getUser.toJSON(), userDetails: updateSpecificUser };
       }
-      const getUser = await User.findById(id);
-      return newSpecificUser
-        ? { ...getUser.toJSON(), userDetails: newSpecificUser }
-        : { ...getUser.toJSON(), userDetails: updateSpecificUser };
     } else {
       return new AuthenticationError();
     }
