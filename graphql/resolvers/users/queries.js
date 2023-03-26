@@ -5,7 +5,7 @@ const adminQueries = {
     const allAdmins = await User.find({ userType: "ADMIN" });
     return allAdmins.map(async ({ _doc }) => ({
       ..._doc,
-      adminDetails: await Admin.findById(_doc.referenceId),
+      userDetails: await Admin.findById(_doc.referenceId),
     }));
   },
   getUserById: async (_, { id }) => {
