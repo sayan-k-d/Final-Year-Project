@@ -2,7 +2,7 @@ directive @external on FIELD_DEFINITION
 scalar Date
 
 type Query {
-  getAllUsers: [User]!
+  getAllUsers(UserType: UserTypeInput): [User]!
   getUserById(id: ID): User!
   login(loginData: AuthInput!): LoginData!
 
