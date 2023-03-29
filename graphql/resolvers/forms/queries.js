@@ -3,7 +3,7 @@ import JWT from "jsonwebtoken";
 import { config } from "dotenv";
 import { AuthenticationError } from "apollo-server";
 config();
-const { sign } = JWT;
+
 const formQueries = {
   getAllForms: async (_, __, { currentUser }) => {
     if (currentUser) {
@@ -12,7 +12,7 @@ const formQueries = {
         ..._doc,
         adminDetails: async () => {
           const userData = await User.findById(_doc.adminId);
-
+          console.log(userData);
           let specificUser;
           if (userData.userType === "ADMIN") {
             specificUser = await Admin.findById(userData.referenceId);
