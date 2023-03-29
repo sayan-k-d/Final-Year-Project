@@ -4,10 +4,22 @@ import { Admin, SuperAdmin, Surveyor, User } from "../../../db/models/index.js";
 const adminQueries = {
   getAllUsers: async (_, { UserType }, { currentUser }) => {
     if (currentUser) {
-      const allAdmins = await User.find({ userType: UserType });
-      return allAdmins.map(async ({ _doc }) => ({
+      const allUsers = await User.find({ userType: UserType });
+      return allUsers.map(async ({ _doc }) => ({
         ..._doc,
-        userDetails: await Admin.findById(_doc.referenceId),
+        userDetails: async () => {
+          let specificUser;
+          if (_doc.userType === "ADMIN") {
+            specificUser = await Admin.findById(_doc.referenceId);
+          }
+          if (_doc.userType == "SUPER_ADMIN") {
+            specificUser = await SuperAdmin.findById(_doc.referenceId);
+          }
+          if (_doc.userType === "SURVEYOR") {
+            specificUser = await Surveyor.findById(_doc.referenceId);
+          }
+          return specificUser;
+        },
       }));
     } else {
       return new AuthenticationError();
@@ -30,6 +42,24 @@ const adminQueries = {
       return user;
     } else {
       return new AuthenticationError();
+    }
+  },
+
+  getAllSurveyors: async (_, __, { currentUser }) => {
+    if (currentUser) {
+      if (
+        currentUser.userType === "ADMIN" ||
+        currentUser.userType === "SUPER_ADMIN"
+      ) {
+        const allSurveyor = await User.find({ userType: "SURVEYOR" });
+
+        return allSurveyor.map(async ({ _doc }) => ({
+          ..._doc,
+          userDetails: await Surveyor.findById(_doc.referenceId),
+        }));
+      } else {
+        return new AuthenticationError();
+      }
     }
   },
 };

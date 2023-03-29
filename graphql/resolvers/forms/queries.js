@@ -12,7 +12,7 @@ const formQueries = {
         ..._doc,
         adminDetails: async () => {
           const userData = await User.findById(_doc.adminId);
-          console.log(userData);
+          // console.log(userData);
           let specificUser;
           if (userData.userType === "ADMIN") {
             specificUser = await Admin.findById(userData.referenceId);

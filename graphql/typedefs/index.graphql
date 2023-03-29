@@ -4,6 +4,7 @@ scalar Date
 type Query {
   getAllUsers(UserType: UserTypeInput): [User]!
   getUserById(id: ID): User!
+  getAllSurveyors: [User]!
   login(loginData: AuthInput!): LoginData!
 
   getAllForms: [Form]!

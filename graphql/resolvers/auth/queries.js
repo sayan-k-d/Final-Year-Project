@@ -20,7 +20,12 @@ const authQueries = {
         specificUser = await Surveyor.findById(user.referenceId);
       }
       token = JWT.sign(
-        { email: email, fullname: user.fullName, userId: user._id },
+        {
+          email: email,
+          fullname: user.fullName,
+          userId: user._id,
+          userType: user.userType,
+        },
         process.env.JWT_SECRET,
         {
           expiresIn: "1h",
