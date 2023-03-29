@@ -14,16 +14,15 @@ const formQueries = {
           const userData = await User.findById(_doc.adminId);
           // console.log(userData);
           let specificUser;
-          if (userData.userType === "ADMIN") {
-            specificUser = await Admin.findById(userData.referenceId);
-          }
-          if (userData.userType == "SUPER_ADMIN") {
-            specificUser = await SuperAdmin.findById(userData.referenceId);
-          }
-          if (userData.userType === "SURVEYOR") {
-            specificUser = await Surveyor.findById(userData.referenceId);
-          }
 
+          specificUser = await Admin.findById(userData.referenceId);
+
+          userData.userDetails = specificUser;
+          return userData;
+        },
+        surveyorDetails: async () => {
+          const userData = await User.findById(_doc.surveyorId);
+          let specificUser = await Surveyor.findById(userData.referenceId);
           userData.userDetails = specificUser;
           return userData;
         },

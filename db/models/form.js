@@ -14,7 +14,7 @@ const FormSchema = Schema(
     responses: [{ type: Object }],
     questions: [{ type: Object }],
     adminId: { type: Schema.Types.ObjectId },
-    surveyorEmail: { type: String },
+    surveyorId: { type: Schema.Types.ObjectId },
   },
   { timestamps: true }
 );

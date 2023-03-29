@@ -17,7 +17,7 @@ input FormInput {
   description: String
   questions: [QuestionInput]
   responses: [ID]
-  surveyorEmail: String
+  surveyorId: ID
 }
 
 type QuestionList {
@@ -30,6 +30,7 @@ type Form implements Timestamps {
   formStatus: String
   description: String
   adminDetails: User
+  surveyorDetails: User
   questions: [QuestionList]
   createdAt: Date!
   updatedAt: Date!
