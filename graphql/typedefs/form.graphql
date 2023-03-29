@@ -25,6 +25,7 @@ type QuestionList {
   questionType: String
 }
 type Form implements Timestamps {
+  _id: ID
   formTitle: String
   formType: String
   formStatus: String

@@ -4,7 +4,7 @@ const formMutations = {
   createForm: async (_, { formsData }, { currentUser }) => {
     if (currentUser) {
       formsData.adminId = currentUser.userId;
-      // console.log(formsData);
+      console.log(formsData);
       let newForm = await new Forms(formsData).save();
       return newForm;
     }
