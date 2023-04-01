@@ -44,23 +44,5 @@ const adminQueries = {
       return new AuthenticationError();
     }
   },
-
-  getAllSurveyors: async (_, __, { currentUser }) => {
-    if (currentUser) {
-      if (
-        currentUser.userType === "ADMIN" ||
-        currentUser.userType === "SUPER_ADMIN"
-      ) {
-        const allSurveyor = await User.find({ userType: "SURVEYOR" });
-
-        return allSurveyor.map(async ({ _doc }) => ({
-          ..._doc,
-          userDetails: await Surveyor.findById(_doc.referenceId),
-        }));
-      } else {
-        return new AuthenticationError();
-      }
-    }
-  },
 };
 export default adminQueries;

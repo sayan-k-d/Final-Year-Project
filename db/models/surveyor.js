@@ -2,7 +2,12 @@ import { Schema, model } from "mongoose";
 
 const SurveyorSchema = Schema(
   {
-    adminId: { type: Schema.Types.ObjectId },
+    formReferance: [
+      {
+        adminId: { type: Schema.Types.ObjectId },
+        formId: { type: Schema.Types.ObjectId },
+      },
+    ],
     userId: { type: Schema.Types.ObjectId },
     organization: {
       organizationName: { type: String },

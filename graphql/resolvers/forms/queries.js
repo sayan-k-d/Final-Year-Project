@@ -7,7 +7,15 @@ config();
 const formQueries = {
   getAllForms: async (_, __, { currentUser }) => {
     if (currentUser) {
-      const allForms = await Forms.find();
+      let allForms;
+      if (currentUser.userType === "SUPER_ADMIN") {
+        allForms = await Forms.find();
+      } else if (currentUser.userType === "ADMIN") {
+        allForms = await Forms.find({ adminId: currentUser.userId });
+      } else if (currentUser.userType === "SURVEYOR") {
+        allForms = await Forms.find({ surveyorId: currentUser.userId });
+      }
+      // console.log(allForms);
       return allForms.map(async ({ _doc }) => ({
         ..._doc,
         adminDetails: async () => {
