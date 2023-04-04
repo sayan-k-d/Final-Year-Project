@@ -17,6 +17,7 @@ input QuestionMetadataInput {
 }
 input QuestionInput {
   id: String
+  required: Boolean
   questionTitle: String
   questionType: String
   questionMetadata: QuestionMetadataInput
@@ -48,6 +49,7 @@ type QuestionMetadataDetails {
 }
 type QuestionList {
   id: String
+  required: Boolean
   questionText: String
   questionType: String
   questionMetadata: QuestionMetadataDetails
