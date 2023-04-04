@@ -20,6 +20,7 @@ input QuestionInput {
   required: Boolean
   questionTitle: String
   questionType: String
+  __typename: String
   questionMetadata: QuestionMetadataInput
 }
 input ThemeInput {
@@ -50,6 +51,7 @@ type QuestionMetadataDetails {
 type QuestionList {
   id: String
   required: Boolean
+  __typename: String
   questionTitle: String
   questionType: String
   questionMetadata: QuestionMetadataDetails
