@@ -50,7 +50,7 @@ type QuestionMetadataDetails {
 type QuestionList {
   id: String
   required: Boolean
-  questionText: String
+  questionTitle: String
   questionType: String
   questionMetadata: QuestionMetadataDetails
 }
