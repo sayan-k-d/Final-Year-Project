@@ -1,3 +1,4 @@
+#all Mutations
 enum FormStatusInput {
   IN_PROCESS
   UNDER_REVIEW
@@ -5,30 +6,57 @@ enum FormStatusInput {
   REJECTED
   CANCELED
 }
+enum VisibilityInput {
+  PUBLIC
+  PRIVATE
+}
+input QuestionMetadataType {
+  min: Int
+  max: Int
+  choices: [String]
+}
 input QuestionInput {
-  questionText: String
+  questionTitle: String
   questionType: String
+  questionMetadata: QuestionMetadataType
+}
+input ThemeInput {
+  color: String
+}
+input FormMetadataInput {
+  visibility: VisibilityInput
+  theme: ThemeInput
 }
 input FormInput {
   formTitle: String
   formType: String
   adminId: ID
   formStatus: FormStatusInput
+  formMeatdata: FormMetadataInput
   description: String
   questions: [QuestionInput]
   responses: [ID]
   surveyorId: ID
 }
 
+#all query fields
 type QuestionList {
   questionText: String
   questionType: String
+}
+type ThemeDetails {
+  color: String
+}
+type FormMetadataDetails {
+  visibility: String
+  theme: ThemeDetails
 }
 type Form implements Timestamps {
   _id: ID
   formTitle: String
   formType: String
   formStatus: String
+  formMeatdata: FormMetadataDetails
   description: String
   adminDetails: User
   surveyorDetails: User

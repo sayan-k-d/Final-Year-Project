@@ -20,7 +20,7 @@ const formQueries = {
         ..._doc,
         adminDetails: async () => {
           const userData = await User.findById(_doc.adminId);
-          // console.log(userData);
+
           let specificUser;
 
           specificUser = await Admin.findById(userData.referenceId);
