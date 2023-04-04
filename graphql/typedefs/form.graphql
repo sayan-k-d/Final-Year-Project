@@ -16,6 +16,7 @@ input QuestionMetadataInput {
   choices: [String]
 }
 input QuestionInput {
+  id: String
   questionTitle: String
   questionType: String
   questionMetadata: QuestionMetadataInput
@@ -40,9 +41,16 @@ input FormInput {
 }
 
 #all query fields
+type QuestionMetadataDetails {
+  min: Int
+  max: Int
+  choices: [String]
+}
 type QuestionList {
+  id: String
   questionText: String
   questionType: String
+  questionMetadata: QuestionMetadataDetails
 }
 type ThemeDetails {
   color: String
