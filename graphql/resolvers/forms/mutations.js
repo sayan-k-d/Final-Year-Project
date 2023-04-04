@@ -29,10 +29,14 @@ const formMutations = {
   },
   updateForm: async (_, { id, updateFormDataInput }, { currentUser }) => {
     if (currentUser) {
-      const updateForm = Forms.findByIdAndUpdate(id, {
-        ...updateFormDataInput,
-        $push: { questions: updateFormDataInput },
-      });
+      const updateForm = Forms.findByIdAndUpdate(
+        id,
+        {
+          ...updateFormDataInput,
+          $push: { questions: updateFormDataInput },
+        },
+        { new: true }
+      );
       return updateForm;
     } else {
       return "Unauthorised";
