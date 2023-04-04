@@ -10,7 +10,7 @@ enum VisibilityInput {
   PUBLIC
   PRIVATE
 }
-input QuestionMetadataType {
+input QuestionMetadataInput {
   min: Int
   max: Int
   choices: [String]
@@ -18,7 +18,7 @@ input QuestionMetadataType {
 input QuestionInput {
   questionTitle: String
   questionType: String
-  questionMetadata: QuestionMetadataType
+  questionMetadata: QuestionMetadataInput
 }
 input ThemeInput {
   color: String
