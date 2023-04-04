@@ -32,7 +32,7 @@ input FormInput {
   formType: String
   adminId: ID
   formStatus: FormStatusInput
-  formMeatdata: FormMetadataInput
+  formMetadata: FormMetadataInput
   description: String
   questions: [QuestionInput]
   responses: [ID]
@@ -56,7 +56,7 @@ type Form implements Timestamps {
   formTitle: String
   formType: String
   formStatus: String
-  formMeatdata: FormMetadataDetails
+  formMetadata: FormMetadataDetails
   description: String
   adminDetails: User
   surveyorDetails: User
