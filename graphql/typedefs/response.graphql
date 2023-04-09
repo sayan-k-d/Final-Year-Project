@@ -1,6 +1,6 @@
 #input fields
 input responseDataInput {
-  questionId: ID
+  questionId: String
   responseText: String
 }
 
@@ -18,7 +18,7 @@ input AnonumousResponseInput {
 
 #query fields
 type responseData {
-  questionId: ID
+  questionId: String
   responseText: String
 }
 type responsesDocument {

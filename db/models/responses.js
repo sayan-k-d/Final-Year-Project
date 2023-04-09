@@ -8,7 +8,7 @@ const ResponseSchema = Schema(
         userId: { type: Schema.Types.ObjectId },
         response: [
           {
-            questionId: { type: Schema.Types.ObjectId },
+            questionId: { type: String },
             responseText: { type: String },
           },
         ],

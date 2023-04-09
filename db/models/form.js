@@ -19,10 +19,11 @@ const FormSchema = Schema(
       default: "IN_PROCESS",
     },
     description: { type: String },
-    responses: [{ type: Object }],
+    responses: { type: Object },
     questions: [{ type: Object }],
     adminId: { type: Schema.Types.ObjectId },
     surveyorId: { type: Schema.Types.ObjectId },
+    respondentId: [{ type: Schema.Types.ObjectId }],
   },
   { timestamps: true }
 );

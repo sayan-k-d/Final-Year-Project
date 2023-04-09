@@ -70,6 +70,7 @@ type Form implements Timestamps {
   description: String
   adminDetails: User
   surveyorDetails: User
+  responseDetails: Response
   questions: [QuestionList]
   createdAt: Date!
   updatedAt: Date!

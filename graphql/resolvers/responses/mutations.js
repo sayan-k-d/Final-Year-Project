@@ -10,7 +10,7 @@ const responseMutations = {
           formId,
           {
             $push: {
-              surveyorId: currentUser.userId,
+              respondentId: currentUser.userId,
             },
           },
           { new: true }
@@ -28,9 +28,9 @@ const responseMutations = {
         await Forms.findByIdAndUpdate(
           formId,
           {
+            responses: newResponse._id,
             $push: {
-              responses: newResponse._id,
-              surveyorId: currentUser.userId,
+              respondentId: currentUser.userId,
             },
           },
           { new: true }
@@ -59,7 +59,7 @@ const responseMutations = {
         formId,
         {
           $push: {
-            surveyorId: anonymousResponseData.userId,
+            respondentId: anonymousResponseData.userId,
           },
         },
         { new: true }
@@ -89,9 +89,9 @@ const responseMutations = {
       await Forms.findByIdAndUpdate(
         formId,
         {
+          responses: newResponse._id,
           $push: {
-            responses: newResponse._id,
-            surveyorId: anonymousResponseData.userId,
+            respondentId: anonymousResponseData.userId,
           },
         },
         { new: true }

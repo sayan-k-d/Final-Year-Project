@@ -1,4 +1,10 @@
-import { Admin, Forms, Surveyor, User } from "../../../db/models/index.js";
+import {
+  Admin,
+  Forms,
+  Surveyor,
+  User,
+  Response,
+} from "../../../db/models/index.js";
 import JWT from "jsonwebtoken";
 import { config } from "dotenv";
 import { AuthenticationError } from "apollo-server";
@@ -35,6 +41,46 @@ const formQueries = {
           return userData;
         },
       }));
+    } else {
+      return new AuthenticationError();
+    }
+  },
+  getFormByIdA: async (_, { id }, { currentUser }) => {
+    if (currentUser) {
+      let getForm = await Forms.findById(id);
+      return {
+        ...getForm.toJSON(),
+        adminDetails: async () => {
+          const userData = await User.findById(getForm.adminId);
+
+          let specificUser = await Admin.findById(userData.referenceId);
+
+          userData.userDetails = specificUser;
+          return userData;
+        },
+        surveyorDetails: async () => {
+          const userData = await User.findById(getForm.surveyorId);
+          let specificUser = await Surveyor.findById(userData.referenceId);
+          userData.userDetails = specificUser;
+          return userData;
+        },
+        responseDetails: async () => {
+          if (getForm.responses) {
+            const responseData = await Response.findById(getForm.responses);
+            return responseData;
+          } else {
+            return null;
+          }
+        },
+      };
+    } else {
+      return new AuthenticationError();
+    }
+  },
+  getFormByIdQ: async (_, { id }, { currentUser }) => {
+    if (currentUser) {
+      let getForm = await Forms.findById(id);
+      return getForm;
     } else {
       return new AuthenticationError();
     }
