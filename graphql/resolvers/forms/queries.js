@@ -5,7 +5,6 @@ import {
   User,
   Response,
 } from "../../../db/models/index.js";
-import JWT from "jsonwebtoken";
 import { config } from "dotenv";
 import { AuthenticationError } from "apollo-server";
 config();
@@ -26,19 +25,23 @@ const formQueries = {
         ..._doc,
         adminDetails: async () => {
           const userData = await User.findById(_doc.adminId);
-
-          let specificUser;
-
-          specificUser = await Admin.findById(userData.referenceId);
-
-          userData.userDetails = specificUser;
-          return userData;
+          if (userData) {
+            let specificUser = await Admin.findById(userData.referenceId);
+            userData.userDetails = specificUser;
+            return userData;
+          } else {
+            return null;
+          }
         },
         surveyorDetails: async () => {
           const userData = await User.findById(_doc.surveyorId);
-          let specificUser = await Surveyor.findById(userData.referenceId);
-          userData.userDetails = specificUser;
-          return userData;
+          if (userData) {
+            let specificUser = await Surveyor.findById(userData.referenceId);
+            userData.userDetails = specificUser;
+            return userData;
+          } else {
+            return null;
+          }
         },
       }));
     } else {
@@ -53,16 +56,24 @@ const formQueries = {
         adminDetails: async () => {
           const userData = await User.findById(getForm.adminId);
 
-          let specificUser = await Admin.findById(userData.referenceId);
+          if (userData) {
+            let specificUser = await Admin.findById(userData.referenceId);
 
-          userData.userDetails = specificUser;
-          return userData;
+            userData.userDetails = specificUser;
+            return userData;
+          } else {
+            return null;
+          }
         },
         surveyorDetails: async () => {
           const userData = await User.findById(getForm.surveyorId);
-          let specificUser = await Surveyor.findById(userData.referenceId);
-          userData.userDetails = specificUser;
-          return userData;
+          if (userData) {
+            let specificUser = await Surveyor.findById(userData.referenceId);
+            userData.userDetails = specificUser;
+            return userData;
+          } else {
+            return null;
+          }
         },
         responseDetails: async () => {
           if (getForm.responses) {
@@ -77,13 +88,9 @@ const formQueries = {
       return new AuthenticationError();
     }
   },
-  getFormByIdQ: async (_, { id }, { currentUser }) => {
-    if (currentUser) {
-      let getForm = await Forms.findById(id);
-      return getForm;
-    } else {
-      return new AuthenticationError();
-    }
+  getFormByIdQ: async (_, { id }) => {
+    let getForm = await Forms.findById(id);
+    return getForm;
   },
 };
 export default formQueries;
