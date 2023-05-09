@@ -1,5 +1,8 @@
 import { Admin, Surveyor, User } from "../../../db/models/index.js";
-
+import crypto from "crypto";
+import sgMail from "@sendgrid/mail";
+import { config } from "dotenv";
+config();
 const authMutations = {
   registerUser: async (_, { registrationData }) => {
     const newUser = await new User(registrationData).save();
@@ -16,6 +19,46 @@ const authMutations = {
     }
 
     return newUser;
+  },
+  resetPassword: async (_, { email }) => {
+    sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+    crypto.randomBytes(32, (err, buffer) => {
+      if (err) {
+        console.log(err);
+      }
+      const resetToken = buffer.toString("hex");
+      User.findOne({ email: email })
+        .then((user) => {
+          if (!user) {
+            return null;
+          }
+          user.resetToken = resetToken;
+          user.resetTokenExpire = Date.now() + 3600000;
+          return user.save();
+        })
+        .then((result) => {
+          let mailOptions = {
+            to: email,
+            from: "sayan.studenttiu2000@gmail.com",
+            subject: "Password Reset",
+            html: `
+            <p>Password Reset Requested</p>
+            <p> Click This <strong><a href="http://localhost:3000/forgot-password/${resetToken}">Link</a></strong> to Set a New Password</p>
+          `,
+          };
+          sgMail
+            .send(mailOptions)
+            .then(() => {
+              return "Email sent";
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+        })
+        .catch((err) => {
+          return err;
+        });
+    });
   },
 };
 export default authMutations;

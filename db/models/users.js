@@ -17,6 +17,8 @@ const UserSchema = Schema(
       enum: ["SURVEYOR", "ADMIN", "SUPER_ADMIN"],
       default: "SURVEYOR",
     },
+    resetToken: { type: String },
+    resetTokenExpire: { type: Date },
     password: { type: String },
   },
   { timestamps: true }

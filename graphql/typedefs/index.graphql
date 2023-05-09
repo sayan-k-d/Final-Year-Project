@@ -25,4 +25,6 @@ type Mutation {
     formId: ID
     anonymousResponseData: AnonumousResponseInput
   ): AnonymousResponse!
+
+  resetPassword(email: String!): String
 }
