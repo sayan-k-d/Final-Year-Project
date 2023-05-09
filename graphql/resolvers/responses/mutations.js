@@ -29,6 +29,7 @@ const responseMutations = {
           formId,
           {
             responses: newResponse._id,
+            formStatus: "ACCEPTED",
             $push: {
               respondentId: currentUser.userId,
             },
@@ -90,6 +91,7 @@ const responseMutations = {
         formId,
         {
           responses: newResponse._id,
+          formStatus: "ACCEPTED",
           $push: {
             respondentId: anonymousResponseData.userId,
           },
