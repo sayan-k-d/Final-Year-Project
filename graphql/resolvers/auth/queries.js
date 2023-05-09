@@ -26,10 +26,7 @@ const authQueries = {
           userId: user._id,
           userType: user.userType,
         },
-        process.env.JWT_SECRET,
-        {
-          expiresIn: "1h",
-        }
+        process.env.JWT_SECRET
       );
     }
 

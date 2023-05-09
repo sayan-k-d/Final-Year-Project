@@ -1,6 +1,8 @@
 import { AuthenticationError } from "apollo-server";
+import sgMail from "@sendgrid/mail";
 import { Admin, SuperAdmin, Surveyor, User } from "../../../db/models/index.js";
-
+import { config } from "dotenv";
+config();
 const userMutations = {
   createUser: async (_, { userDataInput }) => {
     const newUser = await new User(userDataInput).save();
@@ -18,6 +20,27 @@ const userMutations = {
     await User.findByIdAndUpdate(newUser._id, {
       referenceId: specificUser._id,
     });
+    sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+    let emailPayload =
+      "Registared Email " +
+      userDataInput.email +
+      "\nPassword: " +
+      userDataInput.password;
+    let mailOptions = {
+      to: userDataInput.email,
+      from: "sayan.studenttiu2000@gmail.com",
+      subject: "Registration Successful",
+      text: emailPayload,
+    };
+    sgMail
+      .send(mailOptions)
+      .then(() => {
+        console.log("Email sent");
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+
     return { ...newUser.toJSON(), userDetails: specificUser };
   },
 

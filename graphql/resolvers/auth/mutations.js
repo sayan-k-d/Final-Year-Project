@@ -14,6 +14,7 @@ const authMutations = {
         referenceId: newSurveyor._id,
       });
     }
+
     return newUser;
   },
 };
