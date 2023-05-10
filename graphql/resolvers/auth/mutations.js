@@ -42,8 +42,8 @@ const authMutations = {
             from: "sayan.studenttiu2000@gmail.com",
             subject: "Password Reset",
             html: `
-            <p>Password Reset Requested</p>
-            <p> Click This <strong><a href="http://localhost:3000/forgot-password/${resetToken}">Link</a></strong> to Set a New Password</p>
+            <p>Hey,</p>
+            <p>Looks like you forgot your password. Dont worry, here's the link to reset it : <strong><a href="http://localhost:3000/forgot-password/${resetToken}">Reset Your Password</a></strong></p>
           `,
           };
           sgMail
