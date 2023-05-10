@@ -167,6 +167,25 @@ const userMutations = {
     }
   },
 
+  updateUserPassword: async (_, { resetToken, newPassword }) => {
+    try {
+      let user = await User.findOne({
+        resetToken: resetToken,
+        resetTokenExpire: { $gt: Date.now() },
+      });
+      if (!user) {
+        return null;
+      }
+
+      (user.password = newPassword),
+        (user.resetToken = undefined),
+        (user.resetTokenExpire = undefined);
+      return user.save();
+    } catch (err) {
+      return err;
+    }
+  },
+
   deleteUser: async (_, { id }) => {
     const deletedUser = await User.findByIdAndDelete(id);
     if (deletedUser.userType === "ADMIN") {

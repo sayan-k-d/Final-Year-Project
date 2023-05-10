@@ -48,7 +48,7 @@ const authMutations = {
           };
           sgMail
             .send(mailOptions)
-            .then(() => {
+            .then((info) => {
               return "Email sent";
             })
             .catch((error) => {
