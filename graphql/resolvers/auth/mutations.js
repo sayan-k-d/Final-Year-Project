@@ -52,7 +52,7 @@ const authMutations = {
               return "Email sent";
             })
             .catch((error) => {
-              console.error(error);
+              return error;
             });
         })
         .catch((err) => {
