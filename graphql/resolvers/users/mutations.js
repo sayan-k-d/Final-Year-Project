@@ -3,6 +3,7 @@ import sgMail from "@sendgrid/mail";
 import { Admin, SuperAdmin, Surveyor, User } from "../../../db/models/index.js";
 import { config } from "dotenv";
 config();
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 const userMutations = {
   createUser: async (_, { userDataInput }) => {
     const newUser = await new User(userDataInput).save();
@@ -20,17 +21,19 @@ const userMutations = {
     await User.findByIdAndUpdate(newUser._id, {
       referenceId: specificUser._id,
     });
-    sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-    let emailPayload =
-      "Registared Email " +
-      userDataInput.email +
-      "\nPassword: " +
-      userDataInput.password;
+
     let mailOptions = {
       to: userDataInput.email,
       from: "sayan.studenttiu2000@gmail.com",
-      subject: "Registration Successful",
-      text: emailPayload,
+      subject: "Welcome to SurveyHub",
+      html: `
+      <p>Hey there, <strong>${userDataInput.fullName}</strong></p>
+      <p>Welcome to SurveyHub! Please find below the login credentials to your account.<p>
+
+      <p><b>Email Id:</b> ${userDataInput.email}</p>
+      <p><b>Password:</b> ${userDataInput.password}</p>
+
+      <p style="color: red;"><i>**Please ensure you do not share this password with anyone for keeping your account safe.</i></p>`,
     };
     sgMail
       .send(mailOptions)
@@ -121,10 +124,60 @@ const userMutations = {
                 userId: updateSpecificUser.userId,
               }).save();
             }
-            if (newSpecificUser)
-              await User.findByIdAndUpdate(id, {
-                referenceId: newSpecificUser._id,
-              });
+            if (newSpecificUser) {
+              const updatedUserData = await User.findByIdAndUpdate(
+                id,
+                {
+                  referenceId: newSpecificUser._id,
+                },
+                { new: true }
+              );
+              //send email
+              if (
+                (updateUser.userType === "SURVEYOR" &&
+                  updatedUserData.userType === "ADMIN") ||
+                (updateUser.userType === "SURVEYOR" &&
+                  updatedUserData.userType === "SUPER_ADMIN") ||
+                (updateUser.userType === "ADMIN" &&
+                  updatedUserData.userType === "SUPER_ADMIN")
+              ) {
+                let mailOptions = {
+                  to: updatedUserData.email,
+                  from: "sayan.studenttiu2000@gmail.com",
+                  subject: `Promotion`,
+                  html: `
+                <p>Congratulations, <strong>${updatedUserData.fullName}</strong></p>
+                <p>Now, You are Promoted to <b>${updatedUserData.userType}</b><p>
+                `,
+                };
+                sgMail
+                  .send(mailOptions)
+                  .then(() => {
+                    console.log("Email sent");
+                  })
+                  .catch((error) => {
+                    console.error(error);
+                  });
+              } else {
+                let mailOptions = {
+                  to: updatedUserData.email,
+                  from: "sayan.studenttiu2000@gmail.com",
+                  subject: `Demotion!!`,
+                  html: `
+                <p>Dear <strong>${updatedUserData.fullName}</strong></p>
+                <p>This email is with regards to confirm that you are being demoted from <b>${updateUser.userType}</b> to the position of <b>${updatedUserData.userType}</b><p>
+                `,
+                };
+                sgMail
+                  .send(mailOptions)
+                  .then(() => {
+                    console.log("Email sent");
+                  })
+                  .catch((error) => {
+                    console.error(error);
+                  });
+              }
+            }
           }
           const getUser = await User.findById(id);
           return newSpecificUser
