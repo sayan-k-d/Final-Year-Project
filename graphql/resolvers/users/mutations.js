@@ -132,51 +132,6 @@ const userMutations = {
                 },
                 { new: true }
               );
-              //send email
-              if (
-                (updateUser.userType === "SURVEYOR" &&
-                  updatedUserData.userType === "ADMIN") ||
-                (updateUser.userType === "SURVEYOR" &&
-                  updatedUserData.userType === "SUPER_ADMIN") ||
-                (updateUser.userType === "ADMIN" &&
-                  updatedUserData.userType === "SUPER_ADMIN")
-              ) {
-                let mailOptions = {
-                  to: updatedUserData.email,
-                  from: "sayan.studenttiu2000@gmail.com",
-                  subject: `Promotion`,
-                  html: `
-                <p>Congratulations, <strong>${updatedUserData.fullName}</strong></p>
-                <p>Now, You are Promoted to <b>${updatedUserData.userType}</b><p>
-                `,
-                };
-                sgMail
-                  .send(mailOptions)
-                  .then(() => {
-                    console.log("Email sent");
-                  })
-                  .catch((error) => {
-                    console.error(error);
-                  });
-              } else {
-                let mailOptions = {
-                  to: updatedUserData.email,
-                  from: "sayan.studenttiu2000@gmail.com",
-                  subject: `Demotion!!`,
-                  html: `
-                <p>Dear <strong>${updatedUserData.fullName}</strong></p>
-                <p>This email is with regards to confirm that you are being demoted from <b>${updateUser.userType}</b> to the position of <b>${updatedUserData.userType}</b><p>
-                `,
-                };
-                sgMail
-                  .send(mailOptions)
-                  .then(() => {
-                    console.log("Email sent");
-                  })
-                  .catch((error) => {
-                    console.error(error);
-                  });
-              }
             }
           }
           const getUser = await User.findById(id);

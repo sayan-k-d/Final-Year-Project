@@ -19,6 +19,11 @@ type Mutation {
 
   createForm(formsData: FormInput): Form!
   updateForm(id: ID, updateFormDataInput: FormInput): Form!
+  deleteForm(id: ID): Boolean!
+
+  requestFormSurveyor(requestFormData: RequestFormInput): RequestForm!
+  assignAdminForm(id: ID, adminEmail: String): RequestForm!
+  deleteRequestForm(id: ID): Boolean!
 
   createResponse(formId: ID, responseData: ResponseInput): Response!
   anonymousResponses(

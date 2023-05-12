@@ -41,6 +41,20 @@ input FormInput {
   surveyorId: ID
 }
 
+input RequestQuestionInput {
+  questionTitle: String
+  questionType: String
+  questionMetadata: String
+}
+input RequestFormInput {
+  formTitle: String
+  formType: String
+  description: String
+  assignedAdmin: String
+  requestedSurveyor: String
+  questions: [RequestQuestionInput]
+}
+
 #all query fields
 type QuestionMetadataDetails {
   min: Int
@@ -72,6 +86,23 @@ type Form implements Timestamps {
   surveyorDetails: User
   responseDetails: Response
   questions: [QuestionList]
+  createdAt: Date!
+  updatedAt: Date!
+}
+
+type RequestQuestionList {
+  questionTitle: String
+  questionType: String
+  questionMetadata: String
+}
+type RequestForm {
+  _id: ID
+  formTitle: String
+  formType: String
+  description: String
+  assignedAdmin: String
+  requestedSurveyor: String
+  questions: [RequestQuestionList]
   createdAt: Date!
   updatedAt: Date!
 }

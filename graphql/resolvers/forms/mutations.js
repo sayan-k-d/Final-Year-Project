@@ -1,4 +1,16 @@
-import { Admin, Forms, Surveyor, User } from "../../../db/models/index.js";
+import {
+  Admin,
+  Forms,
+  Surveyor,
+  User,
+  SurveyorForms,
+  SuperAdmin,
+} from "../../../db/models/index.js";
+import { AuthenticationError } from "apollo-server";
+import sgMail from "@sendgrid/mail";
+import { config } from "dotenv";
+config();
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const formMutations = {
   createForm: async (_, { formsData }, { currentUser }) => {
@@ -35,6 +47,69 @@ const formMutations = {
       return updateForm;
     } else {
       return "Unauthorised";
+    }
+  },
+  deleteForm: async (_, { id }, { currentUser }) => {
+    if (currentUser) {
+      const deletedForm = await Forms.findByIdAndDelete(id);
+      if (deletedForm) return true;
+      else return false;
+    } else {
+      return new AuthenticationError();
+    }
+  },
+  requestFormSurveyor: async (_, { requestFormData }, { currentUser }) => {
+    if (currentUser) {
+      const getSurveyor = await User.findById(currentUser.userId);
+      requestFormData.requestedSurveyor = getSurveyor.email;
+      let requestedForm = await new SurveyorForms(requestFormData).save();
+      return requestedForm;
+    } else {
+      return new AuthenticationError();
+    }
+  },
+
+  assignAdminForm: async (_, { id, adminEmail }, { currentUser }) => {
+    if (currentUser) {
+      if (currentUser.userType === "SUPER_ADMIN") {
+        const getSuperAdmin = await User.findById(currentUser.userId);
+        const updateRequestForm = await SurveyorForms.findByIdAndUpdate(
+          id,
+          { assignedAdmin: adminEmail },
+          { new: true }
+        );
+
+        let mailOptions = {
+          to: adminEmail,
+          from: "sayan.studenttiu2000@gmail.com",
+          subject: `New Form Assigned`,
+          html: `
+        <p>New Form Requested By ${updateRequestForm.requestedSurveyor}, is Assigned to You From ${getSuperAdmin.email}</p>
+        `,
+        };
+        sgMail
+          .send(mailOptions)
+          .then(() => {
+            console.log("Email sent");
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+        return updateRequestForm;
+      } else {
+        return new Error("Only Super Admin Has Access to This");
+      }
+    } else {
+      return new AuthenticationError();
+    }
+  },
+  deleteRequestForm: async (_, { id }, { currentUser }) => {
+    if (currentUser) {
+      const deleteReqForm = await SurveyorForms.findByIdAndDelete(id);
+      if (deleteReqForm) return true;
+      else return false;
+    } else {
+      return new AuthenticationError();
     }
   },
 };
