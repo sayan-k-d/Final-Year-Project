@@ -7,7 +7,11 @@ const SurveyorFormSchema = Schema(
     formType: { type: String },
     questions: [{ type: Object }],
     assignedAdmin: { type: String },
-    requestedSurveyor: { type: String },
+    requestedSurveyor: {
+      fullName: { type: String },
+      email: { type: String },
+      phone: { type: String },
+    },
   },
   { timestamps: true }
 );

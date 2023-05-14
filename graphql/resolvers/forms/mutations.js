@@ -61,7 +61,7 @@ const formMutations = {
   requestFormSurveyor: async (_, { requestFormData }, { currentUser }) => {
     if (currentUser) {
       const getSurveyor = await User.findById(currentUser.userId);
-      requestFormData.requestedSurveyor = getSurveyor.email;
+      requestFormData.requestedSurveyor = getSurveyor;
       let requestedForm = await new SurveyorForms(requestFormData).save();
       return requestedForm;
     } else {

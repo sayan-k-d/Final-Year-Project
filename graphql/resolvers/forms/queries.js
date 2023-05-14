@@ -4,6 +4,7 @@ import {
   Surveyor,
   User,
   Response,
+  SurveyorForms,
 } from "../../../db/models/index.js";
 import { config } from "dotenv";
 import { AuthenticationError } from "apollo-server";
@@ -91,6 +92,17 @@ const formQueries = {
   getFormByIdQ: async (_, { id }) => {
     let getForm = await Forms.findById(id);
     return getForm;
+  },
+  getRequestedForms: async (_, __, { currentUser }) => {
+    if (currentUser) {
+      if (currentUser.userType === "SUPER_ADMIN") {
+        return await SurveyorForms.find();
+      } else {
+        return new Error("Only Super Admin Has Access to This");
+      }
+    } else {
+      return new AuthenticationError();
+    }
   },
 };
 export default formQueries;

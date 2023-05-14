@@ -46,12 +46,17 @@ input RequestQuestionInput {
   questionType: String
   questionMetadata: String
 }
+input requestedSurveyorInput {
+  fullName: String
+  email: String
+  phone: String
+}
 input RequestFormInput {
   formTitle: String
   formType: String
   description: String
   assignedAdmin: String
-  requestedSurveyor: String
+  requestedSurveyor: requestedSurveyorInput
   questions: [RequestQuestionInput]
 }
 
@@ -95,13 +100,18 @@ type RequestQuestionList {
   questionType: String
   questionMetadata: String
 }
+type requestedSurveyorData {
+  fullName: String
+  email: String
+  phone: String
+}
 type RequestForm {
   _id: ID
   formTitle: String
   formType: String
   description: String
   assignedAdmin: String
-  requestedSurveyor: String
+  requestedSurveyor: requestedSurveyorData
   questions: [RequestQuestionList]
   createdAt: Date!
   updatedAt: Date!
