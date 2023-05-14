@@ -73,19 +73,41 @@ const formMutations = {
     if (currentUser) {
       if (currentUser.userType === "SUPER_ADMIN") {
         const getSuperAdmin = await User.findById(currentUser.userId);
+        const getAdmin = await User.findOne({ email: adminEmail });
         const updateRequestForm = await SurveyorForms.findByIdAndUpdate(
           id,
           { assignedAdmin: adminEmail },
           { new: true }
         );
+        updateRequestForm.questions.map((question) => {
+          console.log(question);
+        });
+        const mailPayload = `<h5>Hey <b>${getAdmin.fullName}</b></h5>,<br>
+        <p><span style="color: #3ca10d">You've been assigned a new form by</span> <b>${
+          getSuperAdmin.fullName
+        }</b> (${getSuperAdmin.email}).</p>
+        
+        <p>Find below the form details given by surveyor- ${
+          updateRequestForm.requestedSurveyor.email
+        }.</p>
+        
+        <b>Form Title</b> : ${updateRequestForm.formTitle}<br>
+        <b>Form Description</b>: ${updateRequestForm.description}<br>
+        <b>Form Type</b>: ${updateRequestForm.formType}<br>
+    
+        <b>Questions</b>:<br>
+                 ${updateRequestForm.questions.map((question) => {
+                   return `[
+          <p><b>Question:</b> ${question.questionTitle},</p>
+          <p><b>Question Type:</b> ${question.questionType},</p>
+          <p><b>Question Metadata:</b> ${question.questionMetadata}</p>]`;
+                 })}`;
 
         let mailOptions = {
           to: adminEmail,
           from: "sayan.studenttiu2000@gmail.com",
           subject: `New Form Assigned`,
-          html: `
-        <p>New Form Requested By ${updateRequestForm.requestedSurveyor}, is Assigned to You From ${getSuperAdmin.email}</p>
-        `,
+          html: mailPayload,
         };
         sgMail
           .send(mailOptions)

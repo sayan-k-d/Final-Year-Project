@@ -38,3 +38,12 @@ type AnonymousResponse {
   formId: ID
   responses: [responseData]
 }
+# type QuestionResponsesData {
+#   questionTitle: String
+#   corResponse: [String]
+# }
+
+type QuestionResponses {
+  questionTitle: String
+  corResponse: [String]
+}

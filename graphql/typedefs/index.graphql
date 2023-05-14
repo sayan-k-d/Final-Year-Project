@@ -12,6 +12,8 @@ type Query {
   getFormByIdQ(id: ID): Form!
 
   getRequestedForms: [RequestForm]!
+
+  getQuestionResponses(id: ID): QuestionResponses!
 }
 
 type Mutation {
