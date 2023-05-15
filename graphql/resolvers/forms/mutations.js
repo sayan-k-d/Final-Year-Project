@@ -41,12 +41,19 @@ const formMutations = {
   },
   updateForm: async (_, { id, updateFormDataInput }, { currentUser }) => {
     if (currentUser) {
+      const getForm = await Forms.findById(id);
+      if (!getForm) {
+        return new Error("Form Not Found!!");
+      }
+      if (getForm.formStatus === "ACCEPTED") {
+        return new Error("Cannot update Form, Responses are already Accepted.");
+      }
       let updateForm = Forms.findByIdAndUpdate(id, updateFormDataInput, {
         new: true,
       });
       return updateForm;
     } else {
-      return "Unauthorised";
+      return new AuthenticationError();
     }
   },
   deleteForm: async (_, { id }, { currentUser }) => {

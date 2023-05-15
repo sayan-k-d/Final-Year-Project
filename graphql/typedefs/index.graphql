@@ -13,7 +13,7 @@ type Query {
 
   getRequestedForms: [RequestForm]!
 
-  getQuestionResponses(id: ID): QuestionResponses!
+  getQuestionResponses(id: ID): [QuestionResponses]!
 }
 
 type Mutation {
