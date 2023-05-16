@@ -1,12 +1,18 @@
 import { AuthenticationError } from "apollo-server";
-import sgMail from "@sendgrid/mail";
 import { Admin, SuperAdmin, Surveyor, User } from "../../../db/models/index.js";
+import sgMail from "@sendgrid/mail";
 import { config } from "dotenv";
+import { hash } from "bcrypt";
 config();
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 const userMutations = {
   createUser: async (_, { userDataInput }) => {
-    const newUser = await new User(userDataInput).save();
+    const hashedPassword = await hash(userDataInput.password, 10);
+    if (!hashedPassword) return new Error("password encryption failed");
+    const newUser = await new User({
+      ...userDataInput,
+      password: hashedPassword,
+    }).save();
     userDataInput.userId = newUser._id;
     let specificUser;
     if (newUser.userType === "ADMIN") {

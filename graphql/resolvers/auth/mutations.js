@@ -2,6 +2,7 @@ import { Admin, Surveyor, User } from "../../../db/models/index.js";
 import crypto from "crypto";
 import sgMail from "@sendgrid/mail";
 import { config } from "dotenv";
+
 config();
 const authMutations = {
   registerUser: async (_, { registrationData }) => {
