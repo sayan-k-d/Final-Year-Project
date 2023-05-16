@@ -10,7 +10,7 @@ const authQueries = {
     const { email, password } = loginData;
 
     const user = await User.findOne({ email: email });
-    const isMatch = await compare(password.user.password);
+    const isMatch = await compare(password, user.password);
     if (!isMatch) return new Error(" Invalid Password!! ");
     let specificUser;
     if (user) {
