@@ -45,42 +45,36 @@ const responseMutations = {
 
   anonymousResponses: async (_, { formId, anonymousResponseData }) => {
     let isFormExist = await Response.findOne({ formId: formId });
-    let isUserExist = await AnonymousUser.findOne({
-      email: anonymousResponseData.email,
-    });
-    let newAnonymousUser;
-    if (!isUserExist) {
-      newAnonymousUser = await new AnonymousUser(anonymousResponseData).save();
-      anonymousResponseData.userId = newAnonymousUser._id;
-    } else {
-      anonymousResponseData.userId = isUserExist._id;
-    }
+    // let isUserExist = await AnonymousUser.findOne({
+    //   email: anonymousResponseData.email,
+    // });
+    // let newAnonymousUser;
+    // if (!isUserExist) {
+    //   newAnonymousUser = await new AnonymousUser(anonymousResponseData).save();
+    //   anonymousResponseData.userId = newAnonymousUser._id;
+    // } else {
+    //   anonymousResponseData.userId = isUserExist._id;
+    // }
+    // await Forms.findByIdAndUpdate(
+    //   formId,
+    //   {
+    //     $push: {
+    //       respondentId: anonymousResponseData.userId,
+    //     },
+    //   },
+    //   { new: true }
+    // );
     if (isFormExist) {
-      await Forms.findByIdAndUpdate(
-        formId,
-        {
-          $push: {
-            respondentId: anonymousResponseData.userId,
-          },
-        },
-        { new: true }
-      );
       const updateResponse = await Response.findOneAndUpdate(
         { formId: formId },
         { $push: { responses: anonymousResponseData } },
         { new: true }
       );
-      return newAnonymousUser
-        ? {
-            responses: anonymousResponseData.response,
-            formId: formId,
-            anonymousUser: newAnonymousUser,
-          }
-        : {
-            responses: anonymousResponseData.response,
-            formId: formId,
-            anonymousUser: isUserExist,
-          };
+      return {
+        responses: anonymousResponseData.response,
+        formId: formId,
+        // anonymousUser: newAnonymousUser,
+      };
     } else {
       const newResponse = new Response({
         formId: formId,
@@ -92,23 +86,14 @@ const responseMutations = {
         {
           responses: newResponse._id,
           formStatus: "ACCEPTED",
-          $push: {
-            respondentId: anonymousResponseData.userId,
-          },
         },
         { new: true }
       );
-      return newAnonymousUser
-        ? {
-            responses: anonymousResponseData.response,
-            formId: formId,
-            anonymousUser: newAnonymousUser,
-          }
-        : {
-            responses: anonymousResponseData.response,
-            formId: formId,
-            anonymousUser: isUserExist,
-          };
+      return {
+        responses: anonymousResponseData.response,
+        formId: formId,
+        // anonymousUser: newAnonymousUser,
+      };
     }
   },
 };

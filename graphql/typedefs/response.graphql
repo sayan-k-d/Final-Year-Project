@@ -29,12 +29,11 @@ type Response {
   formId: ID
   responses: [responsesDocument]
 }
-type anonymousUserData {
-  fullName: String
-  email: String
-}
+# type anonymousUserData {
+#   fullName: String
+#   email: String
+# }
 type AnonymousResponse {
-  anonymousUser: anonymousUserData
   formId: ID
   responses: [responseData]
 }
